@@ -1,7 +1,7 @@
 $(function(){
-	var latest_version = "5.1.3";
+	var latest_version = "Thaumaturge 1.0";
 	$.each(version_dictionary, function(key,version){
-		$("#version").append("<option value="+key+">"+key+"</option>");
+		$("#version").append('<option value="'+key+'">'+key+'</option>');
 	});
 	var aspects = [];
 	var addon_aspects;
@@ -142,11 +142,11 @@ $(function(){
 	});
 	$("body").on("mouseenter", ".aspectlist .aspect", function() {
 		var aspect = $(this).attr("id");
-		if (aspect!="fire"&&aspect!="water"&&aspect!="order"&&aspect!="air"&&aspect!="entropy"&&aspect!="earth"){
+		if (version_dictionary[version]["base_aspects"].indexOf(aspect) < 0){
 			var combination = combinations[aspect];
-			$("#combination_box #left").html('<img src="aspects/color/' + translate[combination[0]] + '.png" /><div class="name">' + formatAspectName(translate[combination[0]]) + '</div><div class="desc">' + combination[0] + '</div>');
-			$("#combination_box #right").html('<img src="aspects/color/' + translate[combination[1]] + '.png" /><div class="name">' + formatAspectName(translate[combination[1]]) + '</div><div class="desc">' + combination[1] + '</div>');
-			$("#combination_box #equals").html('<img src="aspects/color/' + translate[aspect] + '.png" /><div class="name">' + formatAspectName(translate[aspect]) + '</div><div class="desc">' + aspect + '</div>');
+			$("#combination_box #left").html('<img src="aspects/color/' + translate[combination[0]] + '.png" /><div class="name">' + formatAspectName(translate[combination[0]]) + '</div><div class="desc">' + english[combination[0]] + '</div>');
+			$("#combination_box #right").html('<img src="aspects/color/' + translate[combination[1]] + '.png" /><div class="name">' + formatAspectName(translate[combination[1]]) + '</div><div class="desc">' + english[combination[1]] + '</div>');
+			$("#combination_box #equals").html('<img src="aspects/color/' + translate[aspect] + '.png" /><div class="name">' + formatAspectName(translate[aspect]) + '</div><div class="desc">' + english[aspect] + '</div>');
 			$(this).mousemove(function(e) {
 				$("#combination_box").css({left:e.pageX+10, top:e.pageY-100}).show();
 			});
@@ -175,7 +175,7 @@ $(function(){
 		aspects = aspects.concat(tier_aspects);
 		push_addons(aspects, combinations);
 		aspects.forEach(function(aspect) {
-			$('#avail').append('<li class="aspect" id="'+aspect+'"><img src="aspects/color/' + translate[aspect] + '.png" /><div>' + formatAspectName(translate[aspect]) + '</div><div class="desc">' + aspect + '</div></li>');
+			$('#avail').append('<li class="aspect" id="'+aspect+'"><img src="aspects/color/' + translate[aspect] + '.png" /><div>' + formatAspectName(translate[aspect]) + '</div><div class="desc">' + english[aspect] + '</div></li>');
 		});
 		toggle_addons(addon_aspects);
 		var ddData = [];
@@ -186,7 +186,7 @@ $(function(){
 		ddData.sort(ddDataSort);
 		function format(d) {
 			var aspect = d.id;
-			return '<div class="aspect" id="'+aspect+'"><img style="margin: 4px 5px 0 0" src="aspects/color/' + translate[aspect] + '.png" /><div>' + formatAspectName(translate[aspect]) + '</div><div class="desc">' + aspect + '</div></div>'
+			return '<div class="aspect" id="'+aspect+'"><img style="margin: 4px 5px 0 0" src="aspects/color/' + translate[aspect] + '.png" /><div>' + formatAspectName(translate[aspect]) + '</div><div class="desc">' + english[aspect] + '</div></div>'
 		}
 		$('#toSel,#fromSel').select2({
 			data: ddData,
@@ -196,13 +196,12 @@ $(function(){
 		    allowClear:false,
 		    sortResults: function(results, container, query) {
     			return results.sort(function(a, b) {
-    				console.log(a,b)
     				return translate[a.id].localeCompare(translate[b.id]);
     			});
         	},
-		    matcher: function(search,text) { return text.toUpperCase().indexOf(search.toUpperCase())>=0 || translate[text].toUpperCase().indexOf(search.toUpperCase())>=0 }
+		    matcher: function(search,text) { return text.toUpperCase().indexOf(search.toUpperCase())>=0 || english[text].toUpperCase().indexOf(search.toUpperCase())>=0 }
 		});
-		$('#toSel,#fromSel').select2("val", "air");
+		$('#toSel,#fromSel').select2("val", version_dictionary[version]["base_aspects"][0]);
 		graph={};
 		for (compound in combinations) {
 			connect(compound, combinations[compound][0]);
@@ -236,7 +235,7 @@ $(function(){
 				aspect_count[e]++;
 				step_count++;
 			}
-			$('#'+id).append('<li class="aspect_result aspect" id="' + e + '"><img src="aspects/color/' + translate[e] + '.png" /><div>' + formatAspectName(translate[e]) + '</div><div class="desc">' + e + '</div></li><li>↓</li>');
+			$('#'+id).append('<li class="aspect_result aspect" id="' + e + '"><img src="aspects/color/' + translate[e] + '.png" /><div>' + formatAspectName(translate[e]) + '</div><div class="desc">' + english[e] + '</div></li><li>↓</li>');
 		});
 		$('#'+id).children().last().remove();
 		$('#'+id).append('<li id="aspects_used">Aspects Used</li>');
